@@ -30,6 +30,7 @@ namespace api {
 
 namespace {
 
+int disable_protocol_intercept_flag_key = 0;
 // List of registered custom standard schemes.
 std::vector<std::string> g_standard_schemes;
 
@@ -42,6 +43,10 @@ void ClearJobFactoryInIO(
 }
 
 }  // namespace
+
+const void* DisableProtocolInterceptFlagKey() {
+  return &disable_protocol_intercept_flag_key;
+}
 
 std::vector<std::string> GetStandardSchemes() {
   return g_standard_schemes;

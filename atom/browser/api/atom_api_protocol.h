@@ -28,6 +28,7 @@ namespace atom {
 
 namespace api {
 
+const void* DisableProtocolInterceptFlagKey();
 std::vector<std::string> GetStandardSchemes();
 void RegisterStandardSchemes(const std::vector<std::string>& schemes,
                              mate::Arguments* args);
@@ -78,7 +79,7 @@ class Protocol : public mate::TrackableObject<Protocol> {
     net::URLRequestJob* MaybeCreateJob(
         net::URLRequest* request,
         net::NetworkDelegate* network_delegate) const override {
-      if (!request->initiator().has_value()) {
+      if (request->GetUserData(DisableProtocolInterceptFlagKey())) {
         // Don't intercept this request as it was created by `net.request`.
         return nullptr;
       }

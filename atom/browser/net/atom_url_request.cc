@@ -5,6 +5,7 @@
 
 #include "atom/browser/net/atom_url_request.h"
 #include <string>
+#include "atom/browser/api/atom_api_protocol.h"
 #include "atom/browser/api/atom_api_url_request.h"
 #include "atom/browser/atom_browser_context.h"
 #include "base/callback.h"
@@ -17,6 +18,8 @@
 
 namespace {
 const int kBufferSize = 4096;
+
+class DisableProtocolInterceptFlag : public base::SupportsUserData::Data {};
 }  // namespace
 
 namespace atom {
@@ -121,6 +124,9 @@ void AtomURLRequest::DoInitialize(
   request_->set_method(method);
   // Do not send cookies from the cookie store.
   DoSetLoadFlags(net::LOAD_DO_NOT_SEND_COOKIES);
+  // Set a flag to stop custom protocol from intercepting this request.
+  request_->SetUserData(api::DisableProtocolInterceptFlagKey(),
+                        base::WrapUnique(new DisableProtocolInterceptFlag()));
 }
 
 void AtomURLRequest::DoTerminate() {
